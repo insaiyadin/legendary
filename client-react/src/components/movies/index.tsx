@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchMovies } from "../../api/movies";
 import { Spinner } from "react-bootstrap";
+import CreateMovie from "../create-movie";
 
 function Movies() {
   const { isLoading, data } = useQuery({
@@ -14,6 +15,7 @@ function Movies() {
 
   return (
     <>
+      <CreateMovie />
       <h2>Movies</h2>
       <div>
         {data?.map((movie) => (
