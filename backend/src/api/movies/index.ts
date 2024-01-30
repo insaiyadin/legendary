@@ -3,37 +3,53 @@ import { create, findMany, findOne, remove } from "../../services/movies";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  const movies = findMany();
-  res.send(movies);
-});
-
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-
-  const movie = findOne(Number(id));
-
-  if (!movie) {
-    throw new Error("Movie not found");
+router.get("/", async (req, res, next) => {
+  try {
+    const movies = await findMany();
+    res.send(movies);
+  } catch (error) {
+    next(error);
   }
-
-  res.send(movie);
 });
 
-router.delete("/:id", (req, res) => {
+router.get("/:id", async (req, res, next) => {
   const id = req.params.id;
 
-  remove(Number(id));
+  try {
+    const movie = await findOne(Number(id));
 
-  res.status(204).send();
+    if (!movie) {
+      const error = new Error("Movie not found");
+      return next(error);
+    }
+
+    res.send(movie);
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post("/", (req, res) => {
+router.delete("/:id", async (req, res, next) => {
+  const id = req.params.id;
+
+  try {
+    await remove(Number(id));
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/", async (req, res, next) => {
   const title = req.body.title || "";
 
-  const movie = create({ title });
+  try {
+    const movie = await create({ title });
 
-  res.status(201).send(movie);
+    res.status(201).send(movie);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

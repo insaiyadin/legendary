@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: movies-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - ./backend:/app
+      - ./backend/logs:/app/logs
+    depends_on:
+      - postgres
+    env_file:
+      - ./env/.backend.env
+    environment:
+      DB_USER: postgresUser
+      DB_PASSWORD: postgresPassword
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: movies
+
+  postgres:
+    container_name: movies-postgres
+    image: postgres:16-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgresUser
+      POSTGRES_PASSWORD: postgresPassword
+      POSTGRES_DB: movies
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
