@@ -6,6 +6,7 @@ import logger from "./middlewares/logger";
 const app = express();
 
 app.use(express.json());
+
 app.use(logger);
 
 app.use("/api/movies", moviesRouter);
@@ -21,15 +22,12 @@ app.use(
     res.status(statusCode).send({
       status: statusCode,
       message: err.message,
-      errors: err.stack,
     });
   }
 );
 
 async function main() {
   const PORT = 8080;
-
-  console.log(process.env.DB_NAME);
 
   try {
     await db.connect();

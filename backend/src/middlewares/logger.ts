@@ -1,14 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import fs from "fs/promises";
 
-const logger = async (req: Request, res: Response, next: NextFunction) => {
+const logger = (req: Request, res: Response, next: NextFunction) => {
   const { method, originalUrl } = req;
 
-  const log = `${new Date().toISOString()} - ${method} ${originalUrl}\n`;
+  const originalSend = res.send;
 
-  console.log(log);
+  res.send = function (body) {
+    const status = res.statusCode;
+    const log = `${new Date().toISOString()} - ${method} ${originalUrl} - ${status}\r`;
 
-  fs.writeFile("logs/access.log", log, { flag: "a" });
+    console.log(log);
+
+    fs.writeFile("logs/access.log", log, { flag: "a" });
+
+    res.send = originalSend;
+
+    return originalSend.call(res, body);
+  };
 
   next();
 };
