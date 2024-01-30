@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { create, findMany, findOne, remove } from "../../services/movies";
+import { NotFoundError } from "../../errors/not-found";
 
 const router = Router();
 
@@ -19,7 +20,7 @@ router.get("/:id", async (req, res, next) => {
     const movie = await findOne(Number(id));
 
     if (!movie) {
-      const error = new Error("Movie not found");
+      const error = new NotFoundError("Movie not found");
       return next(error);
     }
 
