@@ -8,13 +8,16 @@ import { isAxiosError } from "axios";
 import * as yup from "yup";
 
 const validationSchema = yup.object({
-  title: yup.string().min(3).required(),
+  title: yup
+    .string()
+    .min(3, "Title must be at least 3 characters")
+    .required("Title is required"),
 });
 
 function CreateMovie() {
   const queryClient = useQueryClient();
 
-  const { mutate, isPending, error } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: createMovie,
     onSuccess(data) {
       formik.resetForm({ values: { title: "" } });
@@ -23,6 +26,18 @@ function CreateMovie() {
           return [...old, data];
         }
         return [data];
+      });
+    },
+    onError(error) {
+      if (isAxiosError(error)) {
+        formik.setErrors({
+          title: error.response?.data?.message,
+        });
+        return;
+      }
+
+      formik.setErrors({
+        title: error.message,
       });
     },
   });
@@ -36,8 +51,6 @@ function CreateMovie() {
     },
     validationSchema,
   });
-
-  console.log(formik.errors.title);
 
   return (
     <Form
@@ -74,16 +87,6 @@ function CreateMovie() {
           )}
         </Form.Text>
       </Form.Group>
-
-      {error && (
-        <p
-          style={{
-            color: "tomato",
-          }}
-        >
-          {isAxiosError(error) ? error.response?.data.message : error.message}
-        </p>
-      )}
 
       <Button variant="primary" type="submit" disabled={isPending}>
         Submit
