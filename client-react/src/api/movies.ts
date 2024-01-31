@@ -11,3 +11,8 @@ export const createMovie = async (movieData: CreateMovieDto) => {
   const response = await api.post<Movie>("/api/movies", movieData);
   return response.data;
 };
+
+export const deleteMovie = async (id: number) => {
+  const response = await api.delete(`/api/movies/${id}`);
+  return response.data;
+};

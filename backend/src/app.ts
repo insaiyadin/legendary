@@ -3,11 +3,22 @@ import moviesRouter from "./api/movies";
 import { db } from "./database";
 import logger from "./middlewares/logger";
 import { CustomError } from "./classes/custom-error";
-import cors from "cors";
+// import cors from "cors";
 
 const app = express();
 
-app.use(cors());
+// app.use(
+//   cors({
+//     origin: ["http://localhost:3000"],
+//   })
+// );
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Methods", "POST,GET,DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
 app.use(json());
 

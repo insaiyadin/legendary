@@ -1,11 +1,30 @@
 import { useFormik } from "formik";
 import { CreateMovieDto } from "../../models/create-movie";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createMovie } from "../../api/movies";
+import { Button, Form } from "react-bootstrap";
+import { Movie } from "../../models/movie";
+import { isAxiosError } from "axios";
+import * as yup from "yup";
+
+const validationSchema = yup.object({
+  title: yup.string().min(3).required(),
+});
 
 function CreateMovie() {
-  const { mutate } = useMutation({
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending, error } = useMutation({
     mutationFn: createMovie,
+    onSuccess(data) {
+      formik.resetForm({ values: { title: "" } });
+      queryClient.setQueryData<Movie[]>(["movies"], (old) => {
+        if (old) {
+          return [...old, data];
+        }
+        return [data];
+      });
+    },
   });
 
   const formik = useFormik<CreateMovieDto>({
@@ -15,25 +34,61 @@ function CreateMovie() {
     onSubmit: (values) => {
       mutate(values);
     },
+    validationSchema,
   });
 
+  console.log(formik.errors.title);
+
   return (
-    <div>
-      <h1>Create Movie</h1>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <label>Title</label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.title}
-          />
-        </div>
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+    <Form
+      noValidate
+      validated={
+        formik.touched.title &&
+        formik.isValid &&
+        formik.errors.title === undefined
+      }
+      onSubmit={(e) => {
+        e.preventDefault();
+        formik.submitForm();
+      }}
+    >
+      <Form.Group className="mb-3">
+        <Form.Label>Title</Form.Label>
+        <Form.Control
+          placeholder="Enter title"
+          type="text"
+          name="title"
+          onChange={formik.handleChange}
+          value={formik.values.title}
+          isInvalid={formik.touched.title && formik.errors.title !== undefined}
+        />
+        <Form.Text className="text-muted">
+          {formik.touched.title && formik.errors.title && (
+            <p
+              style={{
+                color: "tomato",
+              }}
+            >
+              {formik.errors.title}
+            </p>
+          )}
+        </Form.Text>
+      </Form.Group>
+
+      {error && (
+        <p
+          style={{
+            color: "tomato",
+          }}
+        >
+          {isAxiosError(error) ? error.response?.data.message : error.message}
+        </p>
+      )}
+
+      <Button variant="primary" type="submit" disabled={isPending}>
+        Submit
+      </Button>
+    </Form>
   );
 }
 

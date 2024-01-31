@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { create, findMany, findOne, remove } from "../../services/movies";
 import { NotFoundError } from "../../errors/not-found";
+import { ConflictError } from "../../errors/conflict";
 
 const router = Router();
 
@@ -49,6 +50,10 @@ router.post("/", async (req, res, next) => {
 
     res.status(201).send(movie);
   } catch (error) {
+    if ((error as any)?.code === "23505") {
+      const conflictError = new ConflictError("Movie already exists");
+      return next(conflictError);
+    }
     next(error);
   }
 });
