@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import fs from "fs/promises";
 
-const logger = (req: Request, res: Response, next: NextFunction) => {
+const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const { method, originalUrl } = req;
 
   const originalSend = res.send;
@@ -22,4 +22,4 @@ const logger = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
-export default logger;
+export default loggerMiddleware;

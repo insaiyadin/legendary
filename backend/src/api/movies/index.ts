@@ -2,6 +2,8 @@ import { Router } from "express";
 import { create, findMany, findOne, remove } from "../../services/movies";
 import { NotFoundError } from "../../errors/not-found";
 import { ConflictError } from "../../errors/conflict";
+import { body } from "express-validator";
+import validationMiddleware from "../../middlewares/validation";
 
 const router = Router();
 
@@ -42,20 +44,32 @@ router.delete("/:id", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
-  const title = req.body.title || "";
+router.post(
+  "/",
+  body("title")
+    .notEmpty()
+    .withMessage("Title is required")
+    .isString()
+    .withMessage("Title must be a string")
+    .trim()
+    .isLength({ min: 3, max: 255 })
+    .withMessage("Title must be minimum 3 characters"),
+  validationMiddleware,
+  async (req, res, next) => {
+    const title = req.body.title || "";
 
-  try {
-    const movie = await create({ title });
+    try {
+      const movie = await create({ title });
 
-    res.status(201).send(movie);
-  } catch (error) {
-    if ((error as any)?.code === "23505") {
-      const conflictError = new ConflictError("Movie already exists");
-      return next(conflictError);
+      res.status(201).send(movie);
+    } catch (error) {
+      if ((error as any)?.code === "23505") {
+        const conflictError = new ConflictError("Movie already exists");
+        return next(conflictError);
+      }
+      next(error);
     }
-    next(error);
   }
-});
+);
 
 export default router;
