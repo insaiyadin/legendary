@@ -36,4 +36,4 @@ DB_PASSWORD - pg user password
 DB_HOST - host of pg
 DB_PORT - port of pg
 DB_NAME - name of database
-LOG_FILE_PATH - eg. logs/access.log for dev | access.log for test env - I didn't handle it in better way
+LOG_FILE_NAME - eg. access.log

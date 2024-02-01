@@ -12,13 +12,12 @@ const loggerMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
     console.log(log);
 
-    const logFilePath = process.env.LOG_FILE_PATH as string;
+    const logFilePath = process.env.LOG_FILE_NAME as string;
 
-    try {
-      fs.writeFile(logFilePath, log, { flag: "a" });
-    } catch (error) {
-      console.error(error);
-    }
+    logFilePath &&
+      fs.writeFile(logFilePath, log, { flag: "a" }).catch((error) => {
+        console.log(error);
+      });
 
     res.send = originalSend;
 

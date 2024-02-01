@@ -7,10 +7,8 @@ jest.setTimeout(155000);
 beforeAll(async () => {
   try {
     await deleteLogFile();
-  } catch (error) {
-    console.error(error);
-  }
-  await createLogFile();
+    await createLogFile();
+  } catch (error) {}
 
   await createDb();
 
