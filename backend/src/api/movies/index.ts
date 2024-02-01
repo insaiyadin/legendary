@@ -1,9 +1,13 @@
-import { Router } from "express";
+import { Request, Router } from "express";
 import { create, findMany, findOne, remove } from "../../services/movies";
 import { NotFoundError } from "../../errors/not-found";
 import { ConflictError } from "../../errors/conflict";
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import validationMiddleware from "../../middlewares/validation";
+
+const paramValidationChain = param("id")
+  .isNumeric()
+  .withMessage("Id must be a number");
 
 const router = Router();
 
@@ -16,33 +20,43 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
-  const id = req.params.id;
+router.get(
+  "/:id",
+  paramValidationChain,
+  validationMiddleware,
+  async (req, res, next) => {
+    const id = req.params.id;
 
-  try {
-    const movie = await findOne(Number(id));
+    try {
+      const movie = await findOne(Number(id));
 
-    if (!movie) {
-      const error = new NotFoundError("Movie not found");
-      return next(error);
+      if (!movie) {
+        const error = new NotFoundError("Movie not found");
+        return next(error);
+      }
+
+      res.send(movie);
+    } catch (error) {
+      next(error);
     }
-
-    res.send(movie);
-  } catch (error) {
-    next(error);
   }
-});
+);
 
-router.delete("/:id", async (req, res, next) => {
-  const id = req.params.id;
+router.delete(
+  "/:id",
+  paramValidationChain,
+  validationMiddleware,
+  async (req: Request<{ id: string }>, res, next) => {
+    const id = req.params.id;
 
-  try {
-    await remove(Number(id));
-    res.status(204).send();
-  } catch (error) {
-    next(error);
+    try {
+      await remove(Number(id));
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.post(
   "/",

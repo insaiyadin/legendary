@@ -1,11 +1,11 @@
 import express, { json, Request, Response, NextFunction } from "express";
 import moviesRouter from "./api/movies";
-import { db } from "./database";
+import { connect, db } from "./database";
 import logger from "./middlewares/logger";
 import { CustomError } from "./classes/custom-error";
 // import cors from "cors";
 
-const app = express();
+export const app = express();
 
 // app.use(
 //   cors({
@@ -33,6 +33,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+  console.log(error);
   if (error instanceof CustomError) {
     return res.status(error.statusCode).send({
       status: error.statusCode,
@@ -47,23 +48,3 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     message: "Internal Server Error",
   });
 });
-
-async function main() {
-  const PORT = 8080;
-
-  try {
-    await db.connect();
-  } catch (error) {
-    console.error("Failed to connect to database");
-    console.error(error);
-    process.exit(1);
-  }
-
-  console.log("Connected to database");
-
-  app.listen(PORT, () =>
-    console.log(`App listening on http://localhost:${PORT}`)
-  );
-}
-
-main();
