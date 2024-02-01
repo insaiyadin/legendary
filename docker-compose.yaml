@@ -21,6 +21,7 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: movies
+      LOG_FILE_PATH: logs/access.log
 
   postgres:
     container_name: movies-postgres

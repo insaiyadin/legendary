@@ -1,9 +1,17 @@
 import { connect, createTable, db } from "../src/database";
+import { createLogFile, deleteLogFile } from "../src/helpers/log-file";
 import { createDb, destroyDb } from "./helpers/database";
 
 jest.setTimeout(155000);
 
 beforeAll(async () => {
+  try {
+    await deleteLogFile();
+  } catch (error) {
+    console.error(error);
+  }
+  await createLogFile();
+
   await createDb();
 
   await connect();
@@ -20,3 +28,4 @@ it("should check db", async () => {
 });
 
 require("./movies");
+require("./middleware");

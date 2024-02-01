@@ -1,6 +1,5 @@
 import express, { json, Request, Response, NextFunction } from "express";
 import moviesRouter from "./api/movies";
-import { connect, db } from "./database";
 import logger from "./middlewares/logger";
 import { CustomError } from "./classes/custom-error";
 // import cors from "cors";
@@ -33,7 +32,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(error);
   if (error instanceof CustomError) {
     return res.status(error.statusCode).send({
       status: error.statusCode,

@@ -1,7 +1,6 @@
 import { GenericContainer, StartedTestContainer, Wait } from "testcontainers";
 
 let postgres: StartedTestContainer;
-let appInstance: Express.Application;
 
 export const createDb = async () => {
   postgres = await new GenericContainer("postgres:16")
@@ -15,8 +14,6 @@ export const createDb = async () => {
     .start();
 
   process.env.DB_PORT = postgres.getMappedPort(5432).toString();
-
-  return appInstance;
 };
 
 export const destroyDb = async () => {
