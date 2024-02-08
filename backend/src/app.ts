@@ -23,6 +23,12 @@ app.use(json());
 
 app.use(logger);
 
+app.get("/", (req: Request, res: Response) => {
+  res.send({
+    message: "OK",
+  });
+});
+
 app.use("/api/movies", moviesRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {

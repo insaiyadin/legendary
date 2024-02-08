@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legendary-backend-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: legendary-backend
+      
+  template:
+    metadata:
+      labels:
+        app: legendary-backend
+    spec:
+      containers:
+      - name: legendary-backend-node
+        image: insaiyadin/legendary-backend:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        env:
+          - name: DB_HOST
+            value: legendary-postgres-srv
+          - name: DB_USER
+            value: postgresUser
+          - name: DB_PASSWORD
+            value: postgresPassword
+          - name: DB_NAME
+            value: legendary
+          - name: DB_PORT
+            value: "5432"
+          - name: LOG_FILE_NAME
+            value: legendary-backend.log
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: legendary-backend-srv
+spec:
+  type: LoadBalancer
+  selector:
+    app: legendary-backend
+  ports:
+    - name: backend
+      protocol: TCP
+      port: 8080
+      targetPort: 8080

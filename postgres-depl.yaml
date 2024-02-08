@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: legendary-postgres-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: legendary-postgres
+  template:
+    metadata:
+      labels:
+        app: legendary-postgres
+    spec:
+      containers:
+        - name: legendary-postgres
+          image: postgres
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          env:
+            - name: POSTGRES_DB
+              value: legendary
+            - name: POSTGRES_USER
+              value: postgresUser
+            - name: POSTGRES_PASSWORD
+              value: postgresPassword
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: legendary-postgres-srv
+spec:
+  selector:
+    app: legendary-postgres
+  ports:
+    - name: pg
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
