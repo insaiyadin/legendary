@@ -21,6 +21,9 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1000m"
+        volumeMounts:
+          - name: movies-pv
+            mountPath: /app/logs
         livenessProbe:
           httpGet:
             path: /
@@ -40,6 +43,11 @@ spec:
             value: "5432"
           - name: LOG_FILE_NAME
             value: legendary-backend.log
+
+      volumes:
+        - name: movies-pv
+          persistentVolumeClaim:
+            claimName: host-pvc
 ---
 apiVersion: v1
 kind: Service
