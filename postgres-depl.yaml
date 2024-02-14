@@ -27,6 +27,11 @@ spec:
               value: postgresUser
             - name: POSTGRES_PASSWORD
               value: postgresPassword
+
+      volumes:
+        - name: movies-pv
+          persistentVolumeClaim:
+            claimName: host-pvc
 ---
 apiVersion: v1
 kind: Service
