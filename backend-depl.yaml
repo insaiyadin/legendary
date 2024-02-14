@@ -43,6 +43,8 @@ spec:
             value: "5432"
           - name: LOG_FILE_NAME
             value: legendary-backend.log
+          - name: HOST
+            value: http://localhost:3000
 
       volumes:
         - name: movies-pv

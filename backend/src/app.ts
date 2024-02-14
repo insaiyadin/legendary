@@ -12,8 +12,14 @@ export const app = express();
 //   })
 // );
 
+const corsHosts: string[] = [];
+
+if (process.env.HOST) {
+  corsHosts.push(process.env.HOST);
+}
+
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", corsHosts.join(","));
   res.header("Access-Control-Allow-Methods", "POST,GET,DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
