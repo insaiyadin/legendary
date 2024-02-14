@@ -16,6 +16,9 @@ spec:
         - name: legendary-postgres
           image: postgres
           imagePullPolicy: Always
+          volumeMounts:
+          - name: postgres-pv
+            mountPath: /var/lib/postgresql/data
           resources:
             limits:
               memory: "128Mi"
@@ -29,7 +32,7 @@ spec:
               value: postgresPassword
 
       volumes:
-        - name: movies-pv
+        - name: postgres-pv
           persistentVolumeClaim:
             claimName: host-pvc
 ---
