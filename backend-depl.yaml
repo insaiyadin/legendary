@@ -60,7 +60,7 @@ spec:
   selector:
     app: legendary-backend
   externalIPs:
-    - "192.168.1.100"
+    - 192.168.1.100
   ports:
     - name: backend
       protocol: TCP
