@@ -56,11 +56,8 @@ kind: Service
 metadata:
   name: legendary-backend-srv
 spec:
-  type: LoadBalancer
   selector:
     app: legendary-backend
-  externalIPs:
-    - 192.168.1.100
   ports:
     - name: backend
       protocol: TCP
