@@ -26,7 +26,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:backend"
+          context: "{{defaultContext}}:backend/devops/production"
           push: true
           tags: insaiyadin/legendary-backend:latest
 

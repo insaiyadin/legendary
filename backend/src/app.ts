@@ -29,7 +29,7 @@ app.use(json());
 
 app.use(logger);
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/api/healthcheck", (req: Request, res: Response) => {
   res.send({
     message: "OK",
   });
