@@ -7,30 +7,27 @@ on:
     branches: [ "master" ]
 
 jobs:
-
-  build:
-
+  docker:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build backend/ --file Dockerfile --tag insaiyadin/legendary-backend
-    - name: Docker Login
-      # You may pin to the exact commit or the version.
-      # uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20
-      uses: docker/login-action@v3.1.0
-      with:
-        # Server address of Docker registry. If not set then will default to Docker Hub
-        # registry: # optional
-        # Username used to log against the Docker registry
-        username: ${{ secrets.DOCKER_USERNAME }}
-        # Password or personal access token used to log against the Docker registry
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        # Specifies whether the given registry is ECR (auto, true or false)
-        ecr: false
-        # Log out from the Docker registry at the end of a job
-        logout: false
-    - name: Push
-      run: docker push insaiyadin/legendary-backend
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: backend/
+          push: true
+          tags: insaiyadin/legendary-backend:latest
+
           
