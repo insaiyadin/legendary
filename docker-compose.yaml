@@ -38,7 +38,9 @@ services:
 
   frontend:
     container_name: movies-frontend
-    build: ./client-react
+    build:
+      context: client-react/
+      dockerfile: ./devops/local/Dockerfile
     ports:
       - 3000:3000
     environment:
