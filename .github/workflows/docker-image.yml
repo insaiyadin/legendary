@@ -9,6 +9,18 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Build and push backend
+            context: "{{defaultContext}}:backend"
+            file: "devops/production/Dockerfile"
+            tags: "insaiyadin/legendary-backend:latest"
+          - name: Build and push frontend
+            context: "{{defaultContext}}:client-react"
+            file: "devops/production/Dockerfile"
+            tags: insaiyadin/legendary-frontend:latest
     steps:
       -
         name: Set up QEMU
@@ -23,20 +35,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       -
-        name: Build and push backend
+        name: ${{ matrix.name }}
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:backend"
-          file: "devops/production/Dockerfile"
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
           push: true
-          tags: insaiyadin/legendary-backend:latest
-      -
-        name: Build and push frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: "{{defaultContext}}:client-react"
-          file: "devops/production/Dockerfile"
-          push: true
-          tags: insaiyadin/legendary-frontend:latest
+          tags: ${{ matrix.tags }}
 
           
