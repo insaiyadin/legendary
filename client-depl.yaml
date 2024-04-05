@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: legendary-client-node
-        image: insaiyadin/legendary-client:latest
+        image: insaiyadin/legendary-frontend:latest
         imagePullPolicy: Always
         resources:
           limits:
