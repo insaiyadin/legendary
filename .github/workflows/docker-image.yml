@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:backend"
-          file: "backend/devops/production/Dockerfile"
+          file: "{context}/backend/devops/production/Dockerfile"
           push: true
           tags: insaiyadin/legendary-backend:latest
       -
@@ -35,7 +35,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: "{{defaultContext}}:client-react"
-          file: "client-react/devops/production/Dockerfile"
+          file: "{context}/client-react/devops/production/Dockerfile"
           push: true
           tags: insaiyadin/legendary-frontend:latest
 
