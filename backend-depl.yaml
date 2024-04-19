@@ -50,7 +50,7 @@ spec:
           - name: LOG_FILE_NAME
             value: legendary-backend.log
           - name: HOST
-            value: http://legendary.kierenkiewicz.com
+            value: https://legendary.kierenkiewicz.com
 
       volumes:
         - name: movies-pv
