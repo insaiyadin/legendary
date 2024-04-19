@@ -29,7 +29,7 @@ spec:
           periodSeconds: 5
         env:
           - name: VITE_API_URL
-            value: http://legendary.local.com
+            value: http://legendary.kierenkiewicz.com
 
 
 ---

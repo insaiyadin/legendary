@@ -30,6 +30,12 @@ spec:
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/healthcheck
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
         env:
           - name: DB_HOST
             value: legendary-postgres-srv
@@ -44,7 +50,7 @@ spec:
           - name: LOG_FILE_NAME
             value: legendary-backend.log
           - name: HOST
-            value: http://localhost:3000
+            value: http://legendary.kierenkiewicz.com
 
       volumes:
         - name: movies-pv
